@@ -29,8 +29,6 @@ class Bios2000ServiceProvider extends ServiceProvider
                 'password' => env('BIOS_PASSWORD'),
             ]);
 
-            print_r($Bios2000);
-
             return $Bios2000;
         });
     }

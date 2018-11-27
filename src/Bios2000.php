@@ -8,11 +8,12 @@ use Illuminate\Database\Connectors\PostgresConnector;
 use Illuminate\Database\Connectors\SQLiteConnector;
 use Illuminate\Database\Connectors\SqlServerConnector;
 use Illuminate\Support\Facades\DB;
+use PDO;
 
 class Bios2000
 {
     protected $conn = null;
-    public $config = [];
+    private $config = [];
 
     public function __construct($config)
     {
@@ -20,9 +21,16 @@ class Bios2000
 
         $connector = $this->createConnector($this->config);
         $this->conn = $connector->connect($this->config);
+    }
 
-        print_r($this->conn->query('SELECT TOP (10) * FROM ADRESSEN')->fetchAll());
+    public function serverinfo()
+    {
+        return $this->conn->getAttribute(PDO::ATTR_SERVER_INFO);
+    }
 
+    public function test()
+    {
+        return $this->conn->query('SELECT TOP (10) * FROM ADRESSEN')->fetchALL(PDO::FETCH_ASSOC);
     }
 
     public function createConnector(array $config)
