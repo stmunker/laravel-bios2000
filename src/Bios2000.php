@@ -2,6 +2,7 @@
 
 namespace Bios2000;
 
+use Bios2000\Models\Database\Adresse;
 use Exception;
 use Illuminate\Database\Connectors\MySqlConnector;
 use Illuminate\Database\Connectors\PostgresConnector;
@@ -31,6 +32,11 @@ class Bios2000
     public function test()
     {
         return $this->conn->query('SELECT TOP (10) * FROM ADRESSEN')->fetchALL(PDO::FETCH_ASSOC);
+    }
+
+    public function adresse()
+    {
+        return new Adresse;
     }
 
     public function createConnector(array $config)
