@@ -12,7 +12,7 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "\\Bios2000\\": "src/"
+            "Bios2000\\": "src/"
         }
     },
     "extra": {
