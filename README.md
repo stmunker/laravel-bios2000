@@ -34,3 +34,14 @@ In config/database.php the following Connection needs to be added:
 ],
 ```
 
+## Allowed methods
+
+To find allowed methods you can simply print
+``` 
+get_class_methods(app()->bios2000);
+```
+
+After that use one of the resultet methods and print that method like
+```
+get_class_methods(app()->bios2000->archive());
+```
