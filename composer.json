@@ -14,5 +14,12 @@
         "psr-4": {
             "\\Bios2000\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bios2000\\Bios2000ServiceProvider"
+            ]
+        }
     }
 }
