@@ -16,4 +16,9 @@ class Bios2000
     {
         return new Address;
     }
+
+    public function customer()
+    {
+        return (new Address())->where('KUNU', '<', 70000);
+    }
 }
