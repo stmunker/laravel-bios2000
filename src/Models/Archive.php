@@ -29,14 +29,34 @@ class Archive
     }
 
     /**
+     * Returns meta data of a single delivery note
+     *
+     * @param int $number
+     * @return mixed
+     */
+    public function deliverynote_posten(int $number)
+    {
+        $filter = [
+            'ART' => 'LS',
+            'BELEG' => $number,
+        ];
+
+        /*
+         * Return only first Result
+         */
+        return $this->aw($filter, false)[0][0];
+    }
+
+    /**
      * Returns result filtered by $arguments of "Auftragswesen" (AW)
      *
      * @param array $arguments
+     * @param bool $kopf
      * @return Collection
      */
-    private function aw(array $arguments)
+    private function aw(array $arguments, bool $kopf = true)
     {
-        return $this->archive('AW', $arguments);
+        return $this->archive('AW', $arguments, $kopf);
     }
 
     /**
@@ -44,16 +64,21 @@ class Archive
      *
      * @param string $archive
      * @param array $arguments
+     * @param bool $kopf (default: true) true = _KOPF, false = _POSTEN
      * @return Collection
      */
-    private function archive(string $archive, array $arguments)
+    private function archive(string $archive, array $arguments, bool $kopf = true)
     {
         $year = date('Y');
 
         $result = new Collection();
 
         while(1) {
-            $tableName = env('BIOS_DB_A').'.dbo.'.$archive.'_ARCHIV_'.$year.'_KOPF';
+            if($kopf) {
+                $tableName = env('BIOS_DB_A') . '.dbo.' . $archive . '_ARCHIV_' . $year . '_KOPF';
+            } else {
+                $tableName = env('BIOS_DB_A') . '.dbo.' . $archive . '_ARCHIV_' . $year . '_POSTEN';
+            }
 
             try {
 
