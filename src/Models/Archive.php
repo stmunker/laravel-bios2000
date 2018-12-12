@@ -44,7 +44,7 @@ class Archive
         /*
          * Return only first Result
          */
-        return $this->aw($filter, false)[0][0];
+        return $this->aw($filter, false)[0];
     }
 
     /**
@@ -82,7 +82,11 @@ class Archive
 
             try {
 
-                $result->push(DB::connection('bios2000')->table($tableName)->where($arguments)->get()->all());
+                if($kopf) {
+                    $result->push(DB::connection('bios2000')->table($tableName)->where($arguments)->get()->all());
+                } else {
+                    $result->push(DB::connection('bios2000')->table($tableName)->where('POSITIONS_NR', '!=', null)->where($arguments)->get()->all());
+                }
 
             } catch (Exception $e) {
                 break;
