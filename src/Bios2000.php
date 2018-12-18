@@ -5,6 +5,7 @@ namespace Bios2000;
 use Bios2000\Models\Archive;
 use Bios2000\Models\Database\Address;
 use Bios2000\Models\Database\Article;
+use Bios2000\Models\Database\Country;
 use Bios2000\Models\Database\OrderHead;
 use Bios2000\Models\Database\RepresentativeSales;
 
@@ -49,5 +50,10 @@ class Bios2000
     public function archive()
     {
         return new Archive;
+    }
+
+    public function country()
+    {
+        return new Country;
     }
 }
