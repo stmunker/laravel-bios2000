@@ -6,6 +6,7 @@ use Bios2000\Models\Archive;
 use Bios2000\Models\Database\Address;
 use Bios2000\Models\Database\Article;
 use Bios2000\Models\Database\Country;
+use Bios2000\Models\Database\Keys;
 use Bios2000\Models\Database\OrderHead;
 use Bios2000\Models\Database\RepresentativeSales;
 
@@ -55,5 +56,14 @@ class Bios2000
     public function country()
     {
         return new Country;
+    }
+
+    public function keys($art, $nummer = NULL)
+    {
+        if ($nummer == NULL) {
+            return (new Keys())->where('ART', $art);
+        } else {
+            return (new Keys())->where('ART', $art)->where('NUMMER', $nummer);
+        }
     }
 }
