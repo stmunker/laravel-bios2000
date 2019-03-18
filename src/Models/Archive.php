@@ -75,9 +75,9 @@ class Archive
 
         while(1) {
             if($kopf) {
-                $tableName = config('bios2000.dba') . '.dbo.' . $archive . '_ARCHIV_' . $year . '_KOPF';
+                $tableName = config('database.connections.bios2000.dba') . '.dbo.' . $archive . '_ARCHIV_' . $year . '_KOPF';
             } else {
-                $tableName = config('bios2000.dba') . '.dbo.' . $archive . '_ARCHIV_' . $year . '_POSTEN';
+                $tableName = config('database.connections.bios2000.dba') . '.dbo.' . $archive . '_ARCHIV_' . $year . '_POSTEN';
             }
 
             try {
