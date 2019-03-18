@@ -21,12 +21,12 @@ class Bios2000ServiceProvider extends ServiceProvider
     {
         $this->app->singleton('bios2000', function () {
             $Bios2000 = new Bios2000([
-                'database' => env('BIOS_DB_M'),
-                'driver' => env('BIOS_CONNECTION'),
-                'host' => env('BIOS_HOST'),
-                'port' => env('BIOS_PORT'),
-                'username' => env('BIOS_USERNAME'),
-                'password' => env('BIOS_PASSWORD'),
+                'database' => config('bios2000.database'),
+                'driver' => config('bios2000.driver'),
+                'host' => config('bios2000.host'),
+                'port' => config('bios2000.port'),
+                'username' => config('bios2000.username'),
+                'password' => config('bios2000.password'),
             ]);
 
             return $Bios2000;

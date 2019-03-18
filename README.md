@@ -31,6 +31,8 @@ In config/database.php the following Connection needs to be added:
     'port' => env('BIOS_PORT'),
     'username' => env('BIOS_USERNAME'),
     'password' => env('BIOS_PASSWORD'),
+    'dba' => env('BIOS_DB_A'),
+    'dbs' => env('BIOS_DB_S'),
 ],
 ```
 
