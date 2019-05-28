@@ -10,6 +10,8 @@ use Bios2000\Models\Database\ContactPerson;
 use Bios2000\Models\Database\Country;
 use Bios2000\Models\Database\Keys;
 use Bios2000\Models\Database\OrderHead;
+use Bios2000\Models\Database\ProductionOrderHead;
+use Bios2000\Models\Database\ProductionOrderPositions;
 use Bios2000\Models\Database\RepresentativeSales;
 
 class Bios2000
@@ -77,5 +79,15 @@ class Bios2000
         } else {
             return (new Keys())->where('ART', $art)->where('NUMMER', $nummer);
         }
+    }
+
+    public function productionOrderHead()
+    {
+        return new ProductionOrderHead;
+    }
+
+    public function productionOrderPositions()
+    {
+        return new ProductionOrderPositions;
     }
 }
