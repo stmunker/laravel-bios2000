@@ -13,11 +13,4 @@ class Capacities extends Bios2000Master
      */
     protected $table = 'DV_KAP';
 
-    /**
-     * Primary Key
-     *
-     * @var string
-     */
-    protected $primaryKey = "ARTNR";
-    
 }
