@@ -24,5 +24,11 @@ class ProductionOrderPositions extends Bios2000Master
             ->where('NUMMER', $this->NUMMER)->where('AUFTRAG_POSITION', $this->AUFTRAG_POSITION);
     }
 
+    public function article()
+    {
+        if($this->ART == 'L')
+            return $this->hasOne('Bios2000\Models\Database\Article', 'ARTNR', 'ARTNR')->first();
+    }
+
 
 }
