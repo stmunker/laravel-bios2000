@@ -35,6 +35,14 @@ class Article extends Bios2000Master
         return $this->hasMany('Bios2000\Models\Database\ArticleAdditionaltext', 'ARTNR', 'ARTNR')->where('SPRACHE', $lang);
     }
 
+
+    public function chaoticWarehouse($lang = 0)
+    {
+        return $this->hasMany('Bios2000\Models\Database\ArticleChaoticWarehouse', 'ARTNR', 'ARTNR');
+    }
+
+
+
     public function stock()
     {
         $article_stock = DB::connection($this->connection)->table('ARTIKEL_LAGER')
