@@ -36,9 +36,14 @@ class Article extends Bios2000Master
     }
 
 
-    public function chaoticWarehouse($lang = 0)
+    public function chaoticWarehouse()
     {
         return $this->hasMany('Bios2000\Models\Database\ArticleChaoticWarehouse', 'ARTNR', 'ARTNR');
+    }
+
+    public function stocks()
+    {
+        return $this->hasMany('Bios2000\Models\Database\ArticleStocks', 'ARTNR', 'ARTNR');
     }
 
 
