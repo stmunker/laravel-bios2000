@@ -83,9 +83,16 @@ class Archive
             try {
 
                 if($kopf) {
-                    $result->push(DB::connection('bios2000')->table($tableName)->where($arguments)->get()->all());
+                    $result->push(DB::connection('bios2000')->table($tableName)
+                        ->where($arguments)
+                        ->orderBy('VERSION', 'desc')
+                        ->get()->all());
                 } else {
-                    $result->push(DB::connection('bios2000')->table($tableName)->where('POSITIONS_NR', '!=', null)->where($arguments)->get()->all());
+                    $result->push(DB::connection('bios2000')->table($tableName)
+                        ->where('POSITIONS_NR', '!=', null)
+                        ->where($arguments)
+                        ->orderBy('VERSION', 'desc')
+                        ->get()->all());
                 }
 
             } catch (Exception $e) {
