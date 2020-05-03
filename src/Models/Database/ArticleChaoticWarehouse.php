@@ -5,6 +5,11 @@ namespace Bios2000\Models\Database;
 use Bios2000\Models\Bios2000Master;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class ArticleChaoticWarehouse
+ * @package Bios2000\Models\Database
+ * @deprecated
+ */
 class ArticleChaoticWarehouse extends Bios2000Master
 {
     /**
@@ -22,5 +27,5 @@ class ArticleChaoticWarehouse extends Bios2000Master
     protected $primaryKey = "ARTNR";
 
     public $incrementing = false;
-    
+
 }

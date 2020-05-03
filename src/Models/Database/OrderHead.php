@@ -4,6 +4,11 @@ namespace Bios2000\Models\Database;
 
 use Bios2000\Models\Bios2000Master;
 
+/**
+ * Class OrderHead
+ * @package Bios2000\Models\Database
+ * @deprecated
+ */
 class OrderHead extends Bios2000Master
 {
     /**

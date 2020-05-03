@@ -5,6 +5,11 @@ namespace Bios2000\Models\Database;
 use Bios2000\Models\Bios2000Master;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class Article
+ * @package Bios2000\Models\Database
+ * @deprecated
+ */
 class Article extends Bios2000Master
 {
     /**
@@ -51,7 +56,7 @@ class Article extends Bios2000Master
     public function stock()
     {
         $article_stock = DB::connection($this->connection)->table('ARTIKEL_LAGER')
-            ->select(DB::raw("sum(BESTAND)-(SELECT ISNULL(sum(d.BESTAND), 0.00) FROM ARTIKEL_LAGER d (NOLOCK) WHERE 
+            ->select(DB::raw("sum(BESTAND)-(SELECT ISNULL(sum(d.BESTAND), 0.00) FROM ARTIKEL_LAGER d (NOLOCK) WHERE
                     (d.ARTNR = '" . $this->ARTNR . "' AND d.LAGER = -1)) -(SELECT ISNULL(sum(d.BESTAND), 0.00) FROM
                     ARTIKEL_LAGER d (NOLOCK) WHERE (d.ARTNR = '" . $this->ARTNR . "' AND d.LAGER IN (SELECT y.NUMMER FROM
                     SCHLUESSEL y WHERE y.ART = 'LG' AND y.EU_KZ = 'J' ))) as SUM_BESTAND"))
@@ -62,9 +67,9 @@ class Article extends Bios2000Master
             ->addSelect(DB::raw("sum(BBK) as SUM_BBK"))
             ->addSelect(DB::raw("(SELECT ISNULL(sum(a.GELIEFERT), 0.00) FROM AUFTRAG_POSTEN a (NOLOCK) WHERE (a.ART = 'A' AND a.ZEILEN_ART = 'L' AND a.ARTNR = '" . $this->ARTNR . "'))
                     +(SELECT ISNULL(sum(d.BESTAND), 0.00) FROM ARTIKEL_LAGER d (NOLOCK) WHERE (d.ARTNR = '" . $this->ARTNR . "' AND d.LAGER = -1))
-                    +(SELECT ISNULL(sum(p.ABRUFMENGE), 0.00) FROM VDA_ABRUF_POSTEN p (NOLOCK) 
-                        LEFT OUTER JOIN VDA_ABRUF_KOPF k (NOLOCK) ON (p.NUMMER = k.NUMMER) 
-                        WHERE (k.ARTNR = '" . $this->ARTNR . "') AND (k.TESTKENNZEICHEN = 0) AND (p.GELIEFERT_FLAG = 'J')) 
+                    +(SELECT ISNULL(sum(p.ABRUFMENGE), 0.00) FROM VDA_ABRUF_POSTEN p (NOLOCK)
+                        LEFT OUTER JOIN VDA_ABRUF_KOPF k (NOLOCK) ON (p.NUMMER = k.NUMMER)
+                        WHERE (k.ARTNR = '" . $this->ARTNR . "') AND (k.TESTKENNZEICHEN = 0) AND (p.GELIEFERT_FLAG = 'J'))
                     +(SELECT ISNULL(sum(g.GELIEFERT),0.00) FROM PACKMITTEL_ARTNR_GELIEFERT g (NOLOCK) WHERE (g.ARTNR = '" . $this->ARTNR . "')) as SUM_RESERVIERT"))
             ->where('ARTNR', '=', $this->ARTNR)
             ->where('LAGER', '!=', '6')// 6 = Sperrlager
