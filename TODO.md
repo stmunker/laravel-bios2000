@@ -1,8 +1,6 @@
 TODOs:
 
-- Create new model and test for table "ARTIKEL"
 - Create new model and test for table "ARTIKEL_ZUSATZTEXT"
-- Create new model and test for table "CHAOT_LAGER"
 - Create new model and test for table "ARTIKEL_LAGER"
 - Create new model and test for table "DV_KAP"
 - Create new model and test for table "S01.dbo.LAENDER"
