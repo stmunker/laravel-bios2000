@@ -29,8 +29,4 @@ class AnsprechpartnerTest extends TestCase
         $this->assertInstanceOf(Adresse::class, $adresse);
     }
 
-    /*
-     * TODO:
-     * - Relationship > ADRESSE
-     */
 }

@@ -1,6 +1,5 @@
 TODOs:
 
-- Create new model and test for table "ANSPRECHPARTNER"
 - Create new model and test for table "ARTIKEL"
 - Create new model and test for table "ARTIKEL_ZUSATZTEXT"
 - Create new model and test for table "CHAOT_LAGER"
