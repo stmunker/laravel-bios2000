@@ -38,7 +38,6 @@ class AdressenTest extends TestCase
 
     /*
      * TODO:
-     * - Relationship > ANSPRECHPARTNER
      * - Attribut VERTRETER_1_NAME
      * - Attribut ZB_NAME
      * - Attribut VB_NAME

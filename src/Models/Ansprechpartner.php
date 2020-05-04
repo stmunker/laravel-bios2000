@@ -29,5 +29,9 @@ class Ansprechpartner extends Bios2000Master
     protected $primaryKey = ['NUMMER', 'KUERZEL'];
     public $incrementing = false;
 
+    public function adresse()
+    {
+        return $this->belongsTo(Adresse::class, 'KUNU', 'KUNU');
+    }
 
 }
