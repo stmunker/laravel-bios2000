@@ -3,11 +3,13 @@
 namespace Bios2000\Models;
 
 use Bios2000\Models\Bios2000Master;
+use Eloquent;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class Article
- * @package Bios2000\Models\Database
+ * Class Artikel
+ * @package Bios2000\Models
+ * @mixin Eloquent
  */
 class Artikel extends Bios2000Master
 {
@@ -26,6 +28,11 @@ class Artikel extends Bios2000Master
     protected $primaryKey = "ARTNR";
 
     public $incrementing = false;
+
+    public function chaotLager()
+    {
+        return $this->hasMany(ChaotLager::class, 'ARTNR', 'ARTNR');
+    }
 
 
 //    /**
