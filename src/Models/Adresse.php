@@ -35,4 +35,9 @@ class Adresse extends Bios2000Master
 //    {
 //        return $this->hasMany('Bios2000\Models\Database\ContactPerson', 'KUNU', 'KUNU');
 //    }
+
+    public function ansprechpartner()
+    {
+        return $this->hasMany(Ansprechpartner::class, 'KUNU', 'KUNU');
+    }
 }

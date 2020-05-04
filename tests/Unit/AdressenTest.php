@@ -3,6 +3,7 @@
 namespace Bios2000\Tests\Unit;
 
 use Bios2000\Models\Adresse;
+use Bios2000\Models\Ansprechpartner;
 use Bios2000\Tests\TestCase;
 
 class AdressenTest extends TestCase
@@ -23,6 +24,16 @@ class AdressenTest extends TestCase
         ];
 
         $this->assertModelHasColumns($expectedDatabaseColumns, Adresse::class);
+    }
+
+    /** @test */
+    function a_address_has_contactperson_relationship()
+    {
+        $contactperson = Ansprechpartner::first();
+
+        $contactperson = Adresse::find($contactperson->KUNU)->ansprechpartner()->first();
+
+        $this->assertInstanceOf(Ansprechpartner::class, $contactperson);
     }
 
     /*
