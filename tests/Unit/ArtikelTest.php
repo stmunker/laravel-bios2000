@@ -41,5 +41,6 @@ class ArtikelTest extends TestCase
      * - Chaotisches Lager
      * - Lager
      * - Bestand
+     * - Datumsfelder als Carbon
      */
 }
