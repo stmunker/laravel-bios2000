@@ -34,6 +34,12 @@ class Artikel extends Bios2000Master
         return $this->hasMany(ChaotLager::class, 'ARTNR', 'ARTNR');
     }
 
+    public function zusatztexte($lang = 0)
+    {
+        return $this->hasMany(ArtikelZusatztext::class, 'ARTNR', 'ARTNR')
+            ->where('SPRACHE', $lang);
+    }
+
 
 //    /**
 //     * Get info text of article
