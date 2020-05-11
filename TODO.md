@@ -1,6 +1,5 @@
 TODOs:
 
-- Create new model and test for table "DV_KAP"
 - Create new model and test for table "S01.dbo.LAENDER"
 - Create new model and test for table "SCHLUESSEL"
 - Create new model and test for table "AUFTRAG_KOPF"
