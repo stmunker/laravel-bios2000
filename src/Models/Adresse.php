@@ -25,6 +25,18 @@ class Adresse extends Bios2000Master
      */
     protected $primaryKey = 'KUNU';
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['ANLAGE_DATUM', 'AENDERUNG_DATUM'];
+
+    /**
+     * Returns contact persons relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function ansprechpartner()
     {
         return $this->hasMany(Ansprechpartner::class, 'KUNU', 'KUNU');

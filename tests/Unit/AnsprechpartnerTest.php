@@ -28,9 +28,4 @@ class AnsprechpartnerTest extends TestCase
 
         $this->assertInstanceOf(Adresse::class, $adresse);
     }
-
-    /*
-     * TODO:
-     * - Datumsfelder als Carbon
-     */
 }

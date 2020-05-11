@@ -5,6 +5,7 @@ namespace Bios2000\Tests\Unit;
 use Bios2000\Models\Adresse;
 use Bios2000\Models\Ansprechpartner;
 use Bios2000\Tests\TestCase;
+use Carbon\Carbon;
 
 class AdressenTest extends TestCase
 {
@@ -36,6 +37,15 @@ class AdressenTest extends TestCase
         $this->assertInstanceOf(Ansprechpartner::class, $contactperson);
     }
 
+    /** @test */
+    function anlage_datum_and_aenderung_datum_are_carbon_objects()
+    {
+        $address = Adresse::first();
+
+        $this->assertInstanceOf(Carbon::class, $address->ANLAGE_DATUM);
+        $this->assertInstanceOf(Carbon::class, $address->AENDERUNG_DATUM);
+    }
+
     /*
      * TODO:
      * - Attribut VERTRETER_1_NAME
@@ -45,6 +55,5 @@ class AdressenTest extends TestCase
      * - Attribut AENDERUNG_USER_NAME
      * - Attribut STATUS
      * - Attribut isLiefersperre (englisch!) (KREDIT_LIMIT == 1.11)
-     * - Datumsfelder als Carbon
      */
 }

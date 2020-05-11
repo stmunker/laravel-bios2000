@@ -30,6 +30,13 @@ class Artikel extends Bios2000Master
     public $incrementing = false;
 
     /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['ANLAGE_DATUM', 'AENDERUNG_DATUM'];
+
+    /**
      * Return chaotic warehouse relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

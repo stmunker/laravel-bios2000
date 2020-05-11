@@ -9,6 +9,7 @@ use Bios2000\Models\ArtikelLager;
 use Bios2000\Models\ArtikelZusatztext;
 use Bios2000\Models\ChaotLager;
 use Bios2000\Tests\TestCase;
+use Carbon\Carbon;
 
 class ArtikelTest extends TestCase
 {
@@ -68,9 +69,17 @@ class ArtikelTest extends TestCase
         $this->assertInstanceOf(ArtikelLager::class, $article->lager()->first());
     }
 
+    /** @test */
+    function anlage_datum_and_aenderung_datum_are_carbon_objects()
+    {
+        $article = Artikel::first();
+
+        $this->assertInstanceOf(Carbon::class, $article->ANLAGE_DATUM);
+        $this->assertInstanceOf(Carbon::class, $article->AENDERUNG_DATUM);
+    }
+
     /*
      * TODO:
      * - Bestand
-     * - Datumsfelder als Carbon
      */
 }
