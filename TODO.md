@@ -1,6 +1,5 @@
 TODOs:
 
-- Create new model and test for table "AUFTRAG_KOPF"
 - Create new model and test for table "AUFTRAG_POSTEN"
 - Create new model and test for table "DV_FE_KOPF"
 - Create new model and test for table "DV_FE_POSTEN"
