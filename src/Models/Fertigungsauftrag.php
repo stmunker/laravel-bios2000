@@ -22,15 +22,11 @@ class Fertigungsauftrag extends Bios2000Master
 
     public $incrementing = false;
 
-//    /**
-//     * Get contact persons of address
-//     *
-//     * @return ProductionOrderPositions
-//     */
-//    public function positions()
-//    {
-//        return $this->hasMany('Bios2000\Models\Database\ProductionOrderPositions', 'KUNU', 'KUNU')
-//            ->where('NUMMER', $this->NUMMER)->where('AUFTRAG_POSITION', $this->AUFTRAG_POSITION);
-//    }
+    public function posten()
+    {
+        return $this->hasMany(FertigungsauftragPosten::class, 'KUNU', 'KUNU')
+            ->where('NUMMER', $this->NUMMER)
+            ->where('AUFTRAG_POSITION', $this->AUFTRAG_POSITION);
+    }
 
 }
