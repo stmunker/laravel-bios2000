@@ -1,15 +1,16 @@
 <?php
 
-namespace Bios2000\Models\Database;
+namespace Bios2000\Models;
 
 use Bios2000\Models\Bios2000Master;
+use Eloquent;
 
 /**
- * Class Country
- * @package Bios2000\Models\Database
- * @deprecated
+ * Class Land
+ * @mixin Eloquent
+ * @package Bios2000\Models
  */
-class Country extends Bios2000Master
+class Land extends Bios2000Master
 {
     /**
      * The table associated with the model.
@@ -23,5 +24,6 @@ class Country extends Bios2000Master
      *
      * @var string
      */
-    protected $primaryKey = "LAND_NR";
+    protected $primaryKey = 'LAND_NR';
+
 }

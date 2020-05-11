@@ -6,6 +6,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
+/**
+ * Class Archive
+ * @package Bios2000\Models
+ * @deprecated
+ */
 class Archive
 {
 

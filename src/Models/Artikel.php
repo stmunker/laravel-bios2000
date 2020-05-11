@@ -1,16 +1,17 @@
 <?php
 
-namespace Bios2000\Models\Database;
+namespace Bios2000\Models;
 
 use Bios2000\Models\Bios2000Master;
+use Eloquent;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class Article
- * @package Bios2000\Models\Database
- * @deprecated
+ * Class Artikel
+ * @mixin Eloquent
+ * @package Bios2000\Models
  */
-class Article extends Bios2000Master
+class Artikel extends Bios2000Master
 {
     /**
      * The table associated with the model.
@@ -24,38 +25,52 @@ class Article extends Bios2000Master
      *
      * @var string
      */
-    protected $primaryKey = "ARTNR";
+    protected $primaryKey = 'ARTNR';
 
     public $incrementing = false;
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['ANLAGE_DATUM', 'AENDERUNG_DATUM'];
 
     /**
-     * Get info text of article
+     * Return chaotic warehouse relationship.
      *
-     * @param int $lang
-     * @return ArticleAdditionaltext
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function additionaltext($lang = 0)
+    public function chaotLager()
     {
-        return $this->hasMany('Bios2000\Models\Database\ArticleAdditionaltext', 'ARTNR', 'ARTNR')->where('SPRACHE', $lang);
+        return $this->hasMany(ChaotLager::class, 'ARTNR', 'ARTNR');
     }
 
-
-    public function chaoticWarehouse()
+    /**
+     * Returns additional texts relationship.
+     *
+     * @param int $lang Language number (optional, default is german)
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function zusatztexte($lang = 0)
     {
-        return $this->hasMany('Bios2000\Models\Database\ArticleChaoticWarehouse', 'ARTNR', 'ARTNR');
+        return $this->hasMany(ArtikelZusatztext::class, 'ARTNR', 'ARTNR')
+            ->where('SPRACHE', $lang);
     }
 
-    public function stocks()
+    /**
+     * Return warehouses relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function lager()
     {
-        return $this->hasMany('Bios2000\Models\Database\ArticleStocks', 'ARTNR', 'ARTNR');
+        return $this->hasMany(ArtikelLager::class, 'ARTNR', 'ARTNR');
     }
 
-
-
-    public function stock()
+    public function bestand()
     {
-        $article_stock = DB::connection($this->connection)->table('ARTIKEL_LAGER')
+        return DB::connection($this->connection)->table('ARTIKEL_LAGER')
             ->select(DB::raw("sum(BESTAND)-(SELECT ISNULL(sum(d.BESTAND), 0.00) FROM ARTIKEL_LAGER d (NOLOCK) WHERE
                     (d.ARTNR = '" . $this->ARTNR . "' AND d.LAGER = -1)) -(SELECT ISNULL(sum(d.BESTAND), 0.00) FROM
                     ARTIKEL_LAGER d (NOLOCK) WHERE (d.ARTNR = '" . $this->ARTNR . "' AND d.LAGER IN (SELECT y.NUMMER FROM
@@ -74,7 +89,5 @@ class Article extends Bios2000Master
             ->where('ARTNR', '=', $this->ARTNR)
             ->where('LAGER', '!=', '6')// 6 = Sperrlager
             ->first();
-
-        return $article_stock;
     }
 }

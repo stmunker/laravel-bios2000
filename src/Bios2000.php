@@ -14,6 +14,11 @@ use Bios2000\Models\Database\ProductionOrderHead;
 use Bios2000\Models\Database\ProductionOrderPositions;
 use Bios2000\Models\Database\RepresentativeSales;
 
+/**
+ * Class Bios2000
+ * @package Bios2000
+ * @deprecated 
+ */
 class Bios2000
 {
 
