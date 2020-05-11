@@ -78,8 +78,19 @@ class ArtikelTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $article->AENDERUNG_DATUM);
     }
 
-    /*
-     * TODO:
-     * - Bestand
-     */
+    /** @test */
+    function it_returns_stock()
+    {
+        $articlenumber = ArtikelLager::where('ARTNR', '!=', '')->first();
+
+        $article = Artikel::find($articlenumber)->first();
+
+        $this->assertObjectHasAttribute('SUM_BESTAND', $article->bestand());
+        $this->assertObjectHasAttribute('SUM_BESTELLT', $article->bestand());
+        $this->assertObjectHasAttribute('SUM_RUECKSTAND', $article->bestand());
+        $this->assertObjectHasAttribute('SUM_MIBEST', $article->bestand());
+        $this->assertObjectHasAttribute('SUM_SOLLBEST', $article->bestand());
+        $this->assertObjectHasAttribute('SUM_BBK', $article->bestand());
+        $this->assertObjectHasAttribute('SUM_RESERVIERT', $article->bestand());
+    }
 }

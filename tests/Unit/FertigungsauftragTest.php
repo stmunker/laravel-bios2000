@@ -79,4 +79,20 @@ class FertigungsauftragTest extends TestCase
 
         $this->assertInstanceOf(FertigungsauftragPosten::class, $productionOrder->posten()->first());
     }
+
+    /** @test */
+    function a_posten_has_a_head()
+    {
+        $item = FertigungsauftragPosten::first();
+
+        $this->assertInstanceOf(Fertigungsauftrag::class, $item->kopf()->first());
+    }
+
+    /** @test */
+    function a_article_posten_has_a_article()
+    {
+        $item = FertigungsauftragPosten::where('ART', 'L')->first();
+
+        $this->assertInstanceOf(Artikel::class, $item->artikel()->first());
+    }
 }

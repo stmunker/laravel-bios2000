@@ -31,23 +31,29 @@ class FertigungsauftragPosten extends Bios2000Master
 
     public $incrementing = false;
 
-// TODO:
-//    /**
-//     * Get contact persons of address
-//     *
-//     * @return ProductionOrderHead
-//     */
-//    public function head()
-//    {
-//        return $this->belongsTo('Bios2000\Models\Database\ProductionOrderHead', 'KUNU', 'KUNU')
-//            ->where('NUMMER', $this->NUMMER)->where('AUFTRAG_POSITION', $this->AUFTRAG_POSITION);
-//    }
-//
-//    public function article()
-//    {
-//        if($this->ART == 'L')
-//            return $this->hasOne('Bios2000\Models\Database\Article', 'ARTNR', 'ARTNR')->first();
-//    }
+    /**
+     * Return head of production order relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function kopf()
+    {
+        return $this->belongsTo(Fertigungsauftrag::class, 'KUNU', 'KUNU')
+            ->where('NUMMER', $this->NUMMER)
+            ->where('AUFTRAG_POSITION', $this->AUFTRAG_POSITION);
+    }
+
+    /**
+     * Returns article relationship if it is a article position.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function artikel()
+    {
+        if ($this->ART == 'L') {
+            return $this->hasOne(Artikel::class, 'ARTNR', 'ARTNR');
+        }
+    }
 
 
 }
