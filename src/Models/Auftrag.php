@@ -22,10 +22,11 @@ class Auftrag extends Bios2000Master
 
     public $incrementing = false;
 
-//    TODO:
-//    public function items()
-//    {
-//        return $this->hasMany('Bios2000\Models\Database\OrderItem', 'ART', 'ART')->where('KUNU', $this->KUNU)->where('NUMMER', $this->NUMMER);
-//    }
+    public function posten()
+    {
+        return $this->hasMany(AuftragPosten::class, 'ART', 'ART')
+            ->where('KUNU', $this->KUNU)
+            ->where('NUMMER', $this->NUMMER);
+    }
 
 }

@@ -8,6 +8,7 @@ use Bios2000\Models\Artikel;
 use Bios2000\Models\ArtikelLager;
 use Bios2000\Models\ArtikelZusatztext;
 use Bios2000\Models\Auftrag;
+use Bios2000\Models\AuftragPosten;
 use Bios2000\Models\ChaotLager;
 use Bios2000\Models\Kapazitaet;
 use Bios2000\Models\Land;
@@ -34,5 +35,33 @@ class AuftragTest extends TestCase
         ];
 
         $this->assertModelHasColumns($expectedDatabaseColumns, Auftrag::class);
+    }
+
+    /** @test */
+    function a_posten_has_needed_columns()
+    {
+        $expectedDatabaseColumns = [
+             'ART', 'KUNU', 'NUMMER', 'LFD_NR', 'POSITIONS_NR', 'VORGANGS_NUMMER', 'DISPO_INTERN', 'DISPO_KUNDE',
+            'ARTNR', 'BEZ_1', 'BEZ_2', 'BEZ_1_ALIGN', 'BESTELLT', 'GELIEFERT', 'PREIS', 'RABATT_1', 'RABATT_2', 'EK',
+            'EK_FLAG', 'GEWICHT', 'V_EINHEIT', 'EM_PREIS', 'LS_FLAG', 'ZEILEN_ART', 'JUMBO_FLAG', 'DRUCK_FLAG',
+            'USER_MARKE', 'BRUTTO_NETTO', 'LS_NUMMER', 'LS_DATUM', 'LAGER', 'WG', 'WS', 'PE', 'US', 'VARIANTE', 'SW1',
+            'SW2', 'SW3', 'BEMERKUNG', 'ZEILEN_SUMME', 'ZEILEN_DB', 'ORG_MENGE', 'ZN_REV', 'VIRTUELLER_AUFTRAG',
+            'DISPO_ORG_WUNSCHTERMIN',
+        ];
+
+        $this->assertModelHasColumns($expectedDatabaseColumns, AuftragPosten::class);
+    }
+
+    /** @test */
+    function it_has_items()
+    {
+        $item = AuftragPosten::first();
+
+        $order = Auftrag::where('ART', $item->ART)
+            ->where('KUNU', $item->KUNU)
+            ->where('NUMMER', $item->NUMMER)
+            ->first();
+
+        $this->assertInstanceOf(AuftragPosten::class, $order->posten()->first());
     }
 }
