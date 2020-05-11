@@ -5,6 +5,7 @@ namespace Bios2000\Tests\Unit;
 use Bios2000\Models\Adresse;
 use Bios2000\Models\Ansprechpartner;
 use Bios2000\Models\Artikel;
+use Bios2000\Models\ArtikelLager;
 use Bios2000\Models\ArtikelZusatztext;
 use Bios2000\Models\ChaotLager;
 use Bios2000\Tests\TestCase;
@@ -57,9 +58,18 @@ class ArtikelTest extends TestCase
         $this->assertInstanceOf(ArtikelZusatztext::class, $article->zusatztexte()->first());
     }
 
+    /** @test */
+    function it_has_lager()
+    {
+        $articlenumber = ArtikelLager::where('ARTNR', '!=', '')->first()->ARTNR;
+
+        $article = Artikel::find($articlenumber);
+
+        $this->assertInstanceOf(ArtikelLager::class, $article->lager()->first());
+    }
+
     /*
      * TODO:
-     * - Lager
      * - Bestand
      * - Datumsfelder als Carbon
      */

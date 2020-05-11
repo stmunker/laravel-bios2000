@@ -1,6 +1,5 @@
 TODOs:
 
-- Create new model and test for table "ARTIKEL_LAGER"
 - Create new model and test for table "DV_KAP"
 - Create new model and test for table "S01.dbo.LAENDER"
 - Create new model and test for table "SCHLUESSEL"
@@ -12,3 +11,4 @@ TODOs:
 
 
 - Create new concept for archive
+- Update all Doc-Blocks

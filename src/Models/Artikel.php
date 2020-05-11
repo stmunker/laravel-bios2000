@@ -40,31 +40,12 @@ class Artikel extends Bios2000Master
             ->where('SPRACHE', $lang);
     }
 
+    public function lager()
+    {
+        return $this->hasMany(ArtikelLager::class, 'ARTNR', 'ARTNR');
+    }
 
-//    /**
-//     * Get info text of article
-//     *
-//     * @param int $lang
-//     * @return ArticleAdditionaltext
-//     */
-//    public function additionaltext($lang = 0)
-//    {
-//        return $this->hasMany('Bios2000\Models\Database\ArticleAdditionaltext', 'ARTNR', 'ARTNR')->where('SPRACHE', $lang);
-//    }
-
-
-//    public function chaoticWarehouse()
-//    {
-//        return $this->hasMany('Bios2000\Models\Database\ArticleChaoticWarehouse', 'ARTNR', 'ARTNR');
-//    }
-//
-//    public function stocks()
-//    {
-//        return $this->hasMany('Bios2000\Models\Database\ArticleStocks', 'ARTNR', 'ARTNR');
-//    }
-
-
-//
+// TODO:
 //    public function stock()
 //    {
 //        $article_stock = DB::connection($this->connection)->table('ARTIKEL_LAGER')
