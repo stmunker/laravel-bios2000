@@ -3,7 +3,13 @@
 namespace Bios2000\Models;
 
 use Bios2000\Models\Bios2000Master;
+use Eloquent;
 
+/**
+ * Class Land
+ * @mixin Eloquent
+ * @package Bios2000\Models
+ */
 class Land extends Bios2000Master
 {
     /**
@@ -18,5 +24,6 @@ class Land extends Bios2000Master
      *
      * @var string
      */
-    protected $primaryKey = "LAND_NR";
+    protected $primaryKey = 'LAND_NR';
+
 }

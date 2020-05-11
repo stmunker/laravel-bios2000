@@ -13,6 +13,10 @@ use function foo\func;
  * TODO: This should be optimized.
  */
 
+/**
+ * Class Archiv
+ * @package Bios2000\Models
+ */
 class Archiv
 {
 

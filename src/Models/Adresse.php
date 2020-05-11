@@ -6,8 +6,8 @@ use Eloquent;
 
 /**
  * Class Adresse
- * @package Bios2000\Models
  * @mixin Eloquent
+ * @package Bios2000\Models
  */
 class Adresse extends Bios2000Master
 {
@@ -23,18 +23,7 @@ class Adresse extends Bios2000Master
      *
      * @var string
      */
-    protected $primaryKey = "KUNU";
-
-
-//    /**
-//     * Get contact persons of address
-//     *
-//     * @return ContactPerson
-//     */
-//    public function contactpersons()
-//    {
-//        return $this->hasMany('Bios2000\Models\Database\ContactPerson', 'KUNU', 'KUNU');
-//    }
+    protected $primaryKey = 'KUNU';
 
     public function ansprechpartner()
     {

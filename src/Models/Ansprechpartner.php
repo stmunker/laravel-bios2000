@@ -7,8 +7,9 @@ use Bios2000\Traits\HasCompositePrimaryKey;
 use Eloquent;
 
 /**
- * Class ContactPerson
- * @mixin Eloquent;
+ * Class Ansprechpartner
+ * @mixin Eloquent
+ * @package Bios2000\Models
  */
 class Ansprechpartner extends Bios2000Master
 {
@@ -22,13 +23,19 @@ class Ansprechpartner extends Bios2000Master
     protected $table = 'ANSPRECHPARTNER';
 
     /**
-     * Primary Key
+     * Primary Keys
      *
-     * @var string
+     * @var array
      */
     protected $primaryKey = ['NUMMER', 'KUERZEL'];
+
     public $incrementing = false;
 
+    /**
+     * Returns customer/supplier (address) relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function adresse()
     {
         return $this->belongsTo(Adresse::class, 'KUNU', 'KUNU');

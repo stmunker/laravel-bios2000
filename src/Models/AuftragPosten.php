@@ -3,9 +3,18 @@
 namespace Bios2000\Models;
 
 use Bios2000\Models\Bios2000Master;
+use Bios2000\Traits\HasCompositePrimaryKey;
+use Eloquent;
 
+/**
+ * Class AuftragPosten
+ * @mixin Eloquent
+ * @package Bios2000\Models
+ */
 class AuftragPosten extends Bios2000Master
 {
+    use HasCompositePrimaryKey;
+
     /**
      * The table associated with the model.
      *
@@ -14,9 +23,9 @@ class AuftragPosten extends Bios2000Master
     protected $table = 'AUFTRAG_POSTEN';
 
     /**
-     * Primary Key
+     * Primary Keys
      *
-     * @var string
+     * @var array
      */
     protected $primaryKey = ['ART', 'KUNU', 'NUMMER', 'LFD_NR'];
 

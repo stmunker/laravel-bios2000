@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Class ChaotLager
- * @package Bios2000\Models
  * @mixin Eloquent
+ * @package Bios2000\Models
  */
 class ChaotLager extends Bios2000Master
 {
@@ -24,14 +24,19 @@ class ChaotLager extends Bios2000Master
     protected $table = 'CHAOT_LAGER';
 
     /**
-     * Primary Key
+     * Primary Keys
      *
-     * @var string
+     * @var array
      */
     protected $primaryKey = ['GANG', 'EBENE', 'FACH', 'ARTNR'];
 
     public $incrementing = false;
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
     protected $dates = ['DATUM'];
 
 }

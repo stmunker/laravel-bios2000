@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Class Artikel
- * @package Bios2000\Models
  * @mixin Eloquent
+ * @package Bios2000\Models
  */
 class Artikel extends Bios2000Master
 {
@@ -25,21 +25,37 @@ class Artikel extends Bios2000Master
      *
      * @var string
      */
-    protected $primaryKey = "ARTNR";
+    protected $primaryKey = 'ARTNR';
 
     public $incrementing = false;
 
+    /**
+     * Return chaotic warehouse relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function chaotLager()
     {
         return $this->hasMany(ChaotLager::class, 'ARTNR', 'ARTNR');
     }
 
+    /**
+     * Returns additional texts relationship.
+     *
+     * @param int $lang Language number (optional, default is german)
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function zusatztexte($lang = 0)
     {
         return $this->hasMany(ArtikelZusatztext::class, 'ARTNR', 'ARTNR')
             ->where('SPRACHE', $lang);
     }
 
+    /**
+     * Return warehouses relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function lager()
     {
         return $this->hasMany(ArtikelLager::class, 'ARTNR', 'ARTNR');
