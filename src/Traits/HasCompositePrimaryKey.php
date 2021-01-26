@@ -14,10 +14,10 @@ trait HasCompositePrimaryKey
     /**
      * Set the keys for a save update query.
      *
-     * @param Builder $query
+     * @param mixed $query
      * @return Builder
      */
-    protected function setKeysForSaveQuery(Builder $query)
+    protected function setKeysForSaveQuery($query)
     {
         $keys = $this->getKeyName();
         if (!is_array($keys)) {
