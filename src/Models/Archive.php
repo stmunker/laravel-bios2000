@@ -88,16 +88,20 @@ class Archive
             try {
 
                 if($kopf) {
-                    $result->push(DB::connection('bios2000')->table($tableName)
+                    $item = DB::connection('bios2000')->table($tableName)
                         ->where($arguments)
                         ->orderBy('VERSION', 'desc')
-                        ->get()->all());
+                        ->get()->all();
                 } else {
-                    $result->push(DB::connection('bios2000')->table($tableName)
+                    $item = DB::connection('bios2000')->table($tableName)
                         ->where('POSITIONS_NR', '!=', null)
                         ->where($arguments)
                         ->orderBy('VERSION', 'desc')
-                        ->get()->all());
+                        ->get()->all();
+                }
+
+                if (count($item) > 0) {
+                    $result->push($item);
                 }
 
             } catch (Exception $e) {
