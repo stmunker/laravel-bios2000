@@ -53,6 +53,38 @@ class Archive
     }
 
     /**
+     * Returns meta data of delivery notes
+     *
+     * @param array $filter
+     * @param bool $withPosten
+     * @return array
+     */
+    public function find_deliverynotes(array $filter = [], bool $withPosten = false): array
+    {
+        $defaultFilter = [
+            'ART' => 'LS',
+        ];
+
+        $filter = array_merge($defaultFilter, $filter);
+
+        /*
+         * Receives all matched results as array
+         */
+        $results = $this->aw($filter)[0];
+
+        /*
+         * Load all item if a delivery note is found the items needed
+         */
+        if($withPosten && count($results) > 0) {
+            foreach($results as $result) {
+                $result->posten = $this->deliverynote_posten($result->BELEG);
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      * Returns result filtered by $arguments of "Auftragswesen" (AW)
      *
      * @param array $arguments
