@@ -68,15 +68,20 @@ class Archive
         $filter = array_merge($defaultFilter, $filter);
 
         /*
-         * Receives all matched results as array
+         * Receives all matched results as collection grouped by year and converted to single array
          */
-        $results = $this->aw($filter)[0];
+        $resultCollection = $this->aw($filter);
+        $results = [];
+
+        foreach ($resultCollection as $year) {
+            $results = array_merge($year, $results);
+        }
 
         /*
          * Load all item if a delivery note is found the items needed
          */
-        if($withPosten && count($results) > 0) {
-            foreach($results as $result) {
+        if ($withPosten && count($results) > 0) {
+            foreach ($results as $result) {
                 $result->posten = $this->deliverynote_posten($result->BELEG);
             }
         }
