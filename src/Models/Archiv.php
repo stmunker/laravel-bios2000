@@ -2,12 +2,10 @@
 
 namespace Bios2000\Models;
 
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Exception;
-use Illuminate\Support\Facades\Schema;
-use function foo\func;
 
 /*
  * TODO: This should be optimized.
@@ -59,6 +57,45 @@ class Archiv
     }
 
     /**
+     * Returns meta data of delivery notes
+     *
+     * @param array $filter
+     * @param bool $withPosten
+     * @return array
+     */
+    public static function findDeliverynotes(array $filter = [], bool $withPosten = false): array
+    {
+        $archiv = new Archiv();
+
+        $defaultFilter = [
+            'ART' => 'LS',
+        ];
+
+        $filter = array_merge($defaultFilter, $filter);
+
+        /*
+         * Receives all matched results as collection grouped by year and converted to single array
+         */
+        $resultCollection = $archiv->aw($filter);
+        $results = [];
+
+        foreach ($resultCollection as $year) {
+            $results = array_merge($year, $results);
+        }
+
+        /*
+         * Load all item if a delivery note is found the items needed
+         */
+        if ($withPosten && count($results) > 0) {
+            foreach ($results as $result) {
+                $result->posten = $archiv->deliverynotePosten($result->BELEG);
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      * Returns result filtered by $arguments of "Auftragswesen" (AW)
      *
      * @param array $arguments
@@ -82,7 +119,7 @@ class Archiv
     {
         $year = date('Y');
 
-        $result = new Collection();
+        $result = new Collection;
 
         while (1) {
             if ($kopf) {
@@ -94,18 +131,20 @@ class Archiv
             try {
                 DB::connection('bios2000')->table($tableName)->select('ART')->first();
             } catch (Exception $e) {
-                if ($year == date('Y')) continue;
+                if ($year == date('Y')) {
+                    continue;
+                }
                 break;
             }
 
             if ($kopf) {
                 if (DB::connection('bios2000')->table($tableName)
-                        ->where($arguments)
-                        ->orderBy('VERSION', 'desc')
-                        ->count() != 0) {
+                    ->where($arguments)
+                    ->orderBy('VERSION', 'desc')
+                    ->count() != 0) {
 
                     if ($year < date('Y')) {
-                        $dbResult = Cache::rememberForever('bios2000_archive_' . $archive . '_' . $year . '_kopf_' . implode('-', $arguments),
+                        $dbResult = Cache::rememberForever($this->buildCacheKey($arguments, $archive, $year, $kopf),
                             function () use ($tableName, $arguments) {
                                 return DB::connection('bios2000')->table($tableName)
                                     ->where($arguments)
@@ -122,13 +161,13 @@ class Archiv
 
             } else {
                 if (DB::connection('bios2000')->table($tableName)
-                        ->where('POSITIONS_NR', '!=', null)
-                        ->where($arguments)
-                        ->orderBy('VERSION', 'desc')
-                        ->count() != 0) {
+                    ->where('POSITIONS_NR', '!=', null)
+                    ->where($arguments)
+                    ->orderBy('VERSION', 'desc')
+                    ->count() != 0) {
 
                     if ($year < date('Y')) {
-                        $dbResult = Cache::rememberForever('bios2000_archive_' . $archive . '_' . $year . '_posten_' . implode('-', $arguments),
+                        $dbResult = Cache::rememberForever($this->buildCacheKey($arguments, $archive, $year, $kopf),
                             function () use ($tableName, $arguments) {
                                 return DB::connection('bios2000')->table($tableName)
                                     ->where('POSITIONS_NR', '!=', null)
@@ -154,4 +193,28 @@ class Archiv
         return $result;
     }
 
+    /**
+     * Builds a cache key based on the given arguments, archive, year, and type.
+     *
+     * @param array $arguments The array of arguments to include in the key.
+     * @param string $archive The archive identifier.
+     * @param string $year The year associated with the cache key.
+     * @param bool $kopf Determines if the key is for 'kopf' or 'posten'.
+     * @return string The generated cache key.
+     */
+    private function buildCacheKey(array $arguments, string $archive, string $year, bool $kopf): string
+    {
+        $strArguments = [];
+        $strKopf = $kopf ? 'kopf' : 'posten';
+
+        foreach ($arguments as $argument) {
+            if (is_array($argument)) {
+                $strArguments[] = implode('-', $argument);
+            } else {
+                $strArguments[] = $argument;
+            }
+        }
+
+        return 'bios2000_archive_' . $archive . '_' . $year . '_' . $strKopf . '_' . implode('-', $strArguments);
+    }
 }
