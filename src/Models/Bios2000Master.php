@@ -4,7 +4,7 @@ namespace Bios2000\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Bios2000Master extends Model
+abstract class Bios2000Master extends Model
 {
     /**
      * Connection name from config/database.php
