@@ -3,7 +3,6 @@
 namespace Bios2000\Models\Procedures;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class BuchenLagerLmobile
 {
@@ -35,7 +34,7 @@ class BuchenLagerLmobile
         float $diffBestellt,
         float $diffBbk,
         string $doak = 'J',
-        Carbon|null $datum = null,
+        Carbon|string|null $datum = null,
         string $kunu = '99996',
         string $lagerort = ''
     ) {
@@ -46,26 +45,51 @@ class BuchenLagerLmobile
         $this->diffBestellt = $diffBestellt;
         $this->diffBbk = $diffBbk;
         $this->doak = $doak;
-        $this->datum = $datum;
+        $this->setDatum($datum);
         $this->kunu = $kunu;
         $this->lagerort = $lagerort;
     }
 
-    public function call(): void
+    /**
+     * Ensure datum is always a Carbon instance.
+     * Accepts null, string, or Carbon. Null or empty string becomes now().
+     */
+    protected function setDatum(Carbon|string|null $datum): void
+    {
+        if ($datum instanceof Carbon) {
+            $this->datum = $datum;
+            return;
+        }
+
+        if (is_null($datum)) {
+            $this->datum = Carbon::now();
+            return;
+        }
+
+        if (is_string($datum)) {
+            $trimmed = trim($datum);
+            $this->datum = $trimmed === '' ? Carbon::now() : Carbon::parse($trimmed);
+            return;
+        }
+
+        // Fallback, though types cover all cases
+        $this->datum = Carbon::now();
+    }
+
+    public function getSqlStatement(): string
     {
         $statement = 'exec GP_BUCHEN_LAGER_LMOBILE ';
-        $statement .= $this->artnr . ', ';
+        $statement .= "'" . $this->artnr . "', ";
         $statement .= $this->lager . ', ';
         $statement .= $this->diffBestand . ', ';
         $statement .= $this->diffRueckstand . ', ';
         $statement .= $this->diffBestellt . ', ';
         $statement .= $this->diffBbk . ', ';
-        $statement .= $this->doak . ', ';
-        $statement .= $this->datum->format('d.m.Y H:i:s') . ', ';
-        $statement .= $this->kunu . ', ';
-        $statement .= $this->lagerort;
+        $statement .= "'" . $this->doak . "', ";
+        $statement .= "'" . $this->datum->format('d.m.Y H:i:s') . "', ";
+        $statement .= "'" . $this->kunu . "', ";
+        $statement .= "'" . $this->lagerort . "'";
 
-        dd($statement);
-        DB::statement($statement);
+        return $statement;
     }
 }
