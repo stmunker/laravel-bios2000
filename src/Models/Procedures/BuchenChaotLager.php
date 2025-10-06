@@ -2,6 +2,7 @@
 
 namespace Bios2000\Models\Procedures;
 
+use Bios2000\Dtos\ChaotLagerKarteiDto;
 use Carbon\Carbon;
 
 class BuchenChaotLager
@@ -19,6 +20,8 @@ class BuchenChaotLager
     protected float $diffBestand;
 
     protected string $charge;
+
+    protected ?ChaotLagerKarteiDto $chaotLagerKarteiDto = null;
 
     public function __construct(
         string $artnr,
@@ -66,7 +69,7 @@ class BuchenChaotLager
 
     public function getSqlStatement(): string
     {
-        $statement = 'EXEC GP_BUCHEN_CHAOT_LAGER ';
+        $statement = "EXEC GP_BUCHEN_CHAOT_LAGER ";
         $statement .= "'" . $this->artnr . "', ";
         $statement .= "'" . $this->gang . "', ";
         $statement .= "'" . $this->ebene . "', ";
@@ -76,5 +79,12 @@ class BuchenChaotLager
         $statement .= "'" . $this->charge . "'";
 
         return $statement;
+    }
+
+    public function createChaotLagerKarteiDto(array $data): ChaotLagerKarteiDto
+    {
+        $this->chaotLagerKarteiDto = new ChaotLagerKarteiDto($data);
+
+        return $this->chaotLagerKarteiDto;
     }
 }

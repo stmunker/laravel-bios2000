@@ -5,51 +5,26 @@ namespace Bios2000\Controllers;
 use Bios2000\Dtos\ChaotLagerKarteiDto;
 use Bios2000\Models\Procedures\BuchenChaotLager;
 use Bios2000\Models\Procedures\BuchenLagerLmobile;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class Buchung
 {
-    public static function entryToMain(): bool
+    public static function entryToMain(string $artnr, int $lager, float $menge, string $datum, string $kunu): bool
     {
-        return true;
-    }
-
-    public static function transferMainToChaot(): bool
-    {
-        $lagerAusgang = new BuchenLagerLmobile('4124B5066B', 1, -40, 0, 0, 0, 'J', '25.09.2025 12:13:14', 99996, '');
-        $lagerEingang = new BuchenLagerLmobile('4124B5066B', 0, 40, 0, 0, 0, 'J', '25.09.2025 12:13:14', 99996, '');
-        $chaotLager = new BuchenChaotLager('4124B5066B', '501', '1', '6', 40, '25.09.2025 12:13:14', '');
-        $chaotLagerKartei = new ChaotLagerKarteiDto([
-            'ARTNR' => '4124B5066B',
-            'DATUM' => '25.09.2025 12:13:14',
-            'GANG' => '501',
-            'EBENE' => '1',
-            'FACH' => '6',
-            'MENGE' => 40,
-            'USER_NR' => 68,
-            'KUNU' => '99996',
-            'NUMMER' => '',
-            'VORGANGS_NUMMER' => '',
-            'LS_NUMMER' => '',
-            'DV_BARCODE' => 0,
-            'BUCHUNGS_KZ' => 10,
-            'CHARGE' => '',
-        ]);
+        // TODO: Die Prozedur BUCHEN_LAGER_LMOBILE bucht alles mit dem Buchungskennzeichen 10 (UMBUCHUNG). Prüfen ob es eine Möglichkeit gibt wie das im Nachgang verändert werden kann.
+        $lagerEingang = new BuchenLagerLmobile($artnr, $lager, $menge, 0, 0, 0, 'J', $datum, $kunu, '');
+        $connection = (string) Config::get('bios2000.database_connection');
 
         try {
-            DB::connection('bios2000')->beginTransaction();
-
-            DB::connection('bios2000')->statement($lagerAusgang->getSqlStatement());
-            DB::connection('bios2000')->statement($lagerEingang->getSqlStatement());
-            DB::connection('bios2000')->statement($chaotLager->getSqlStatement());
-            $chaotLagerKartei->createModel();
-
-            DB::connection('bios2000')->commit();
+            DB::connection($connection)->beginTransaction();
+            DB::connection($connection)->statement($lagerEingang->getSqlStatement());
+            DB::connection($connection)->commit();
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            DB::connection('bios2000')->rollBack();
+            DB::connection($connection)->rollBack();
 
             return false;
         }
@@ -57,8 +32,65 @@ class Buchung
         return true;
     }
 
-    public static function transferMainToMain(): bool
-    {
+    public static function transferMainToChaot(
+        string $artnr,
+        string $gang,
+        string $ebene,
+        string $fach,
+        float $menge,
+        string $datum,
+        string $kunu,
+        int $user,
+        string $LSNummer = '',
+        int $buchungsKz = 10,
+        string $charge = '',
+        string $lagerort = ''
+    ): bool {
+        if ($menge >= 0) {
+            $negativeMenge = $menge * -1;
+        } else {
+            $negativeMenge = $menge;
+            $menge = $menge * -1;
+        }
+
+        $connection = (string) Config::get('bios2000.database_connection');
+
+        $lagerAusgang = new BuchenLagerLmobile($artnr, 1, $negativeMenge, 0, 0, 0, 'J', $datum, $kunu, $lagerort);
+        $lagerEingang = new BuchenLagerLmobile($artnr, 0, $menge, 0, 0, 0, 'J', $datum, $kunu, $lagerort);
+        $chaotLager = new BuchenChaotLager($artnr, $gang, $ebene, $fach, $menge, $datum, $charge);
+        $chaotLagerKartei = $chaotLager->createChaotLagerKarteiDto([
+            'ARTNR' => $artnr,
+            'DATUM' => $datum,
+            'GANG' => $gang,
+            'EBENE' => $ebene,
+            'FACH' => $fach,
+            'MENGE' => $menge,
+            'USER_NR' => $user,
+            'KUNU' => $kunu,
+            'NUMMER' => '',
+            'VORGANGS_NUMMER' => '',
+            'LS_NUMMER' => $LSNummer,
+            'DV_BARCODE' => 0,
+            'BUCHUNGS_KZ' => $buchungsKz,
+            'CHARGE' => $charge,
+        ]);
+
+        try {
+            DB::connection($connection)->beginTransaction();
+
+            DB::connection($connection)->statement($lagerAusgang->getSqlStatement());
+            DB::connection($connection)->statement($lagerEingang->getSqlStatement());
+            DB::connection($connection)->statement($chaotLager->getSqlStatement());
+            $chaotLagerKartei->createModel();
+
+            DB::connection($connection)->commit();
+        } catch (Throwable $e) {
+            Log::error($e->getMessage());
+            DB::connection($connection)->rollBack();
+
+            return false;
+        }
+
         return true;
     }
 
@@ -76,7 +108,14 @@ class Buchung
         string $charge = '',
         string $lagerort = ''
     ): bool {
-        $negativeMenge = $menge * -1;
+        if ($menge >= 0) {
+            $negativeMenge = $menge * -1;
+        } else {
+            $negativeMenge = $menge;
+            $menge = $menge * -1;
+        }
+
+        $connection = (string) Config::get('bios2000.database_connection');
 
         $chaotLager = new BuchenChaotLager($artnr, $gang, $ebene, $fach, $negativeMenge, $datum, $charge);
         $chaotLagerKartei = new ChaotLagerKarteiDto([
@@ -96,17 +135,17 @@ class Buchung
         $lagerEingang = new BuchenLagerLmobile($artnr, 1, $menge, 0, 0, 0, 'J', $datum, $kunu, $lagerort);
 
         try {
-            DB::connection('bios2000')->beginTransaction();
+            DB::connection($connection)->beginTransaction();
 
-            DB::connection('bios2000')->statement($chaotLager->getSqlStatement());
+            DB::connection($connection)->statement($chaotLager->getSqlStatement());
             $chaotLagerKartei->createModel();
-            DB::connection('bios2000')->statement($lagerAusgang->getSqlStatement());
-            DB::connection('bios2000')->statement($lagerEingang->getSqlStatement());
+            DB::connection($connection)->statement($lagerAusgang->getSqlStatement());
+            DB::connection($connection)->statement($lagerEingang->getSqlStatement());
 
-            DB::connection('bios2000')->commit();
+            DB::connection($connection)->commit();
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            DB::connection('bios2000')->rollBack();
+            DB::connection($connection)->rollBack();
 
             return false;
         }
@@ -114,55 +153,75 @@ class Buchung
         return true;
     }
 
-    public static function transferChaotToChaot(): bool
-    {
-        $chaotAusgang = new BuchenChaotLager('4124B5066B', '501', '1', '5', -10, '24.09.2025 10:11:45', '');
+    public static function transferChaotToChaot(
+        string $artnr,
+        string $gang,
+        string $ebene,
+        string $fach,
+        float $menge,
+        string $datum,
+        string $kunu,
+        int $user,
+        string $LSNummer = '',
+        int $buchungsKz = 10,
+        string $charge = ''
+    ): bool {
+        if ($menge >= 0) {
+            $negativeMenge = $menge * -1;
+        } else {
+            $negativeMenge = $menge;
+            $menge = $menge * -1;
+        }
+
+        $connection = (string) Config::get('bios2000.database_connection');
+
+        $chaotAusgang = new BuchenChaotLager($artnr, $gang, $ebene, $fach, $negativeMenge, $datum, $charge);
         $chaotLagerKarteiAusgang = new ChaotLagerKarteiDto([
-            'ARTNR' => '4124B5066B',
-            'DATUM' => '24.09.2025 10:53:59',
-            'GANG' => '501',
-            'EBENE' => '1',
-            'FACH' => '5',
-            'MENGE' => -10,
-            'USER_NR' => 68,
-            'KUNU' => '99996',
+            'ARTNR' => $artnr,
+            'DATUM' => $datum,
+            'GANG' => $gang,
+            'EBENE' => $ebene,
+            'FACH' => $fach,
+            'MENGE' => $negativeMenge,
+            'USER_NR' => $user,
+            'KUNU' => $kunu,
             'NUMMER' => '',
             'VORGANGS_NUMMER' => '',
-            'LS_NUMMER' => '',
+            'LS_NUMMER' => $LSNummer,
             'DV_BARCODE' => 0,
-            'BUCHUNGS_KZ' => 10,
-            'CHARGE' => '',
+            'BUCHUNGS_KZ' => $buchungsKz,
+            'CHARGE' => $charge,
         ]);
-        $chaotEingang = new BuchenChaotLager('4124B5066B', '501', '1', '6', 10, '24.09.2025 10:11:45', '');
+        $chaotEingang = new BuchenChaotLager($artnr, $gang, $ebene, $fach, $menge, $datum, $charge);
         $chaotLagerKarteiEingang = new ChaotLagerKarteiDto([
-            'ARTNR' => '4124B5066B',
-            'DATUM' => '24.09.2025 10:53:59',
-            'GANG' => '501',
-            'EBENE' => '1',
-            'FACH' => '6',
-            'MENGE' => -10,
-            'USER_NR' => 68,
-            'KUNU' => '99996',
+            'ARTNR' => $artnr,
+            'DATUM' => $datum,
+            'GANG' => $gang,
+            'EBENE' => $ebene,
+            'FACH' => $fach,
+            'MENGE' => $menge,
+            'USER_NR' => $user,
+            'KUNU' => $kunu,
             'NUMMER' => '',
             'VORGANGS_NUMMER' => '',
-            'LS_NUMMER' => '',
+            'LS_NUMMER' => $LSNummer,
             'DV_BARCODE' => 0,
-            'BUCHUNGS_KZ' => 10,
-            'CHARGE' => '',
+            'BUCHUNGS_KZ' => $buchungsKz,
+            'CHARGE' => $charge,
         ]);
 
         try {
-            DB::connection('bios2000')->beginTransaction();
+            DB::connection($connection)->beginTransaction();
 
-            DB::connection('bios2000')->statement($chaotAusgang->getSqlStatement());
+            DB::connection($connection)->statement($chaotAusgang->getSqlStatement());
             $chaotLagerKarteiAusgang->createModel();
-            DB::connection('bios2000')->statement($chaotEingang->getSqlStatement());
+            DB::connection($connection)->statement($chaotEingang->getSqlStatement());
             $chaotLagerKarteiEingang->createModel();
 
-            DB::connection('bios2000')->commit();
+            DB::connection($connection)->commit();
         } catch (Throwable $e) {
             Log::error($e->getMessage());
-            DB::connection('bios2000')->rollBack();
+            DB::connection($connection)->rollBack();
 
             return false;
         }
@@ -170,7 +229,24 @@ class Buchung
         return true;
     }
 
-    public static function removalFromMain(): bool {
+    public static function removalFromMain(string $artnr, int $lager, float $menge, string $datum, string $kunu): bool
+    {
+        // TODO: Die Prozedur BUCHEN_LAGER_LMOBILE bucht alles mit dem Buchungskennzeichen 10 (UMBUCHUNG). Prüfen ob es eine Möglichkeit gibt wie das im Nachgang verändert werden kann. Ggf. Kann die Funktion mit entryToMain zusammengefasst werden
+        $negativeMenge = $menge * -1;
+        $connection = (string) Config::get('bios2000.database_connection');
+        $lagerAusgang = new BuchenLagerLmobile($artnr, $lager, $negativeMenge, 0, 0, 0, 'J', $datum, $kunu, '');
+
+        try {
+            DB::connection($connection)->beginTransaction();
+            DB::connection($connection)->statement($lagerAusgang->getSqlStatement());
+            DB::connection($connection)->commit();
+        } catch (Throwable $e) {
+            Log::error($e->getMessage());
+            DB::connection($connection)->rollBack();
+
+            return false;
+        }
+
         return true;
     }
 }
