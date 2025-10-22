@@ -39,4 +39,8 @@ class ChaotLager extends Bios2000Master
      */
     protected $dates = ['DATUM'];
 
+    public function isLiftrack(): bool
+    {
+        return $this->GANG > 900;
+    }
 }

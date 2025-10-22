@@ -97,7 +97,7 @@ class Archiv
          */
         if ($withPosten && count($results) > 0) {
             foreach ($results as $result) {
-                $result->posten = $archiv->deliverynotePosten($result->BELEG);
+                $result->posten = collect($archiv->deliverynotePosten($result->BELEG));
             }
         }
 
