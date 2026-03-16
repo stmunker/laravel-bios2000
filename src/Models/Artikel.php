@@ -2,14 +2,14 @@
 
 namespace Bios2000\Models;
 
-use Bios2000\Models\Bios2000Master;
 use Eloquent;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Class Artikel
+ *
  * @mixin Eloquent
- * @package Bios2000\Models
  */
 class Artikel extends Bios2000Master
 {
@@ -39,7 +39,7 @@ class Artikel extends Bios2000Master
     /**
      * Return chaotic warehouse relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function chaotLager()
     {
@@ -49,8 +49,8 @@ class Artikel extends Bios2000Master
     /**
      * Returns additional texts relationship.
      *
-     * @param int $lang Language number (optional, default is german)
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @param  int  $lang  Language number (optional, default is german)
+     * @return HasMany
      */
     public function zusatztexte($lang = 0)
     {
@@ -61,7 +61,7 @@ class Artikel extends Bios2000Master
     /**
      * Return warehouses relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function lager()
     {
@@ -75,11 +75,11 @@ class Artikel extends Bios2000Master
                     (d.ARTNR = '" . $this->ARTNR . "' AND d.LAGER = -1)) -(SELECT ISNULL(sum(d.BESTAND), 0.00) FROM
                     ARTIKEL_LAGER d (NOLOCK) WHERE (d.ARTNR = '" . $this->ARTNR . "' AND d.LAGER IN (SELECT y.NUMMER FROM
                     SCHLUESSEL y WHERE y.ART = 'LG' AND y.EU_KZ = 'J' ))) as SUM_BESTAND"))
-            ->addSelect(DB::raw("sum(BESTELLT) as SUM_BESTELLT"))
-            ->addSelect(DB::raw("sum(RUECKSTAND) as SUM_RUECKSTAND"))
-            ->addSelect(DB::raw("sum(MIBEST) as SUM_MIBEST"))
-            ->addSelect(DB::raw("sum(SOLLBEST) as SUM_SOLLBEST"))
-            ->addSelect(DB::raw("sum(BBK) as SUM_BBK"))
+            ->addSelect(DB::raw('sum(BESTELLT) as SUM_BESTELLT'))
+            ->addSelect(DB::raw('sum(RUECKSTAND) as SUM_RUECKSTAND'))
+            ->addSelect(DB::raw('sum(MIBEST) as SUM_MIBEST'))
+            ->addSelect(DB::raw('sum(SOLLBEST) as SUM_SOLLBEST'))
+            ->addSelect(DB::raw('sum(BBK) as SUM_BBK'))
             ->addSelect(DB::raw("(SELECT ISNULL(sum(a.GELIEFERT), 0.00) FROM AUFTRAG_POSTEN a (NOLOCK) WHERE (a.ART = 'A' AND a.ZEILEN_ART = 'L' AND a.ARTNR = '" . $this->ARTNR . "'))
                     +(SELECT ISNULL(sum(d.BESTAND), 0.00) FROM ARTIKEL_LAGER d (NOLOCK) WHERE (d.ARTNR = '" . $this->ARTNR . "' AND d.LAGER = -1))
                     +(SELECT ISNULL(sum(p.ABRUFMENGE), 0.00) FROM VDA_ABRUF_POSTEN p (NOLOCK)
@@ -89,5 +89,24 @@ class Artikel extends Bios2000Master
             ->where('ARTNR', '=', $this->ARTNR)
             ->where('LAGER', '!=', '6')// 6 = Sperrlager
             ->first();
+    }
+
+    /**
+     * Get BEZ_1 to BEZ_8 as a semicolon-separated string.
+     *
+     * @return string
+     */
+    public function bezeichnungen(): string
+    {
+        $bezeichnungen = [
+            $this->BEZ_1, $this->BEZ_2, $this->BEZ_3, $this->BEZ_4,
+            $this->BEZ_5, $this->BEZ_6, $this->BEZ_7, $this->BEZ_8,
+        ];
+
+        $filtered = array_filter($bezeichnungen, function ($value) {
+            return !is_null($value) && trim($value) !== '';
+        });
+
+        return implode('; ', $filtered);
     }
 }
