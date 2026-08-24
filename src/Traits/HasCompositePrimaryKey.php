@@ -12,6 +12,30 @@ use Illuminate\Database\Eloquent\Builder;
 trait HasCompositePrimaryKey
 {
     /**
+     * Get the value of the model's primary key.
+     *
+     * @return mixed
+     */
+    public function getKey()
+    {
+        $keys = $this->getKeyName();
+
+        if (! is_array($keys)) {
+            return parent::getKey();
+        }
+
+        $keyValues = [];
+        foreach ($keys as $key) {
+            $val = $this->getAttribute($key);
+            if ($val !== null && $val !== '') {
+                $keyValues[] = $val;
+            }
+        }
+
+        return count($keyValues) > 0 ? implode('-', $keyValues) : null;
+    }
+
+    /**
      * Set the keys for a save update query.
      *
      * @param mixed $query
